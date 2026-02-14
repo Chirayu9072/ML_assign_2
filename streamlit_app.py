@@ -84,3 +84,24 @@ for name, model in models.items():
 
 results_df = pd.DataFrame(results)
 st.write("Model Comparison Table", results_df)
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, classification_report
+
+# Dropdown for model selection
+selected_model = st.selectbox("Select a model to view details", list(models.keys()))
+
+if selected_model:
+    model = models[selected_model]
+    preds = model.predict(X_test)
+
+    # Confusion Matrix
+    cm = confusion_matrix(y_test, preds)
+    fig, ax = plt.subplots()
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
+    st.pyplot(fig)
+
+    # Classification Report
+    st.text("Classification Report:")
+    st.text(classification_report(y_test, preds))
