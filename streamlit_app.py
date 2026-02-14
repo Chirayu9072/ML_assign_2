@@ -45,3 +45,42 @@ X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 st.write("Preprocessing complete. Training data shape:", X_train.shape)
+
+
+# --- Model Training & Evaluation ---
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, recall_score, f1_score, matthews_corrcoef
+
+models = {
+    "Logistic Regression": LogisticRegression(max_iter=1000),
+    "Decision Tree": DecisionTreeClassifier(),
+    "kNN": KNeighborsClassifier(),
+    "Naive Bayes": GaussianNB(),
+    "Random Forest": RandomForestClassifier(),
+    "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric="logloss")
+}
+
+results = []
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    preds = model.predict(X_test)
+    probs = model.predict_proba(X_test)[:,1] if hasattr(model, "predict_proba") else None
+    
+    metrics = {
+        "Model": name,
+        "Accuracy": accuracy_score(y_test, preds),
+        "Precision": precision_score(y_test, preds),
+        "Recall": recall_score(y_test, preds),
+        "F1": f1_score(y_test, preds),
+        "MCC": matthews_corrcoef(y_test, preds),
+        "AUC": roc_auc_score(y_test, probs) if probs is not None else None
+    }
+    results.append(metrics)
+
+results_df = pd.DataFrame(results)
+st.write("Model Comparison Table", results_df)
