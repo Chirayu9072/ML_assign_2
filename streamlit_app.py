@@ -113,3 +113,15 @@ if selected_model:
     # Classification Report
     st.text("Classification Report:")
     st.text(classification_report(y_test, preds))
+
+    # Observations
+    st.subheader("Model Performance Observation")
+    observations = {
+        "Logistic Regression": "Achieved ~82% accuracy. Performs well on linearly separable features, but struggles with complex non-linear relationships. Higher precision for class 0, weaker recall for class 1.",
+        "Decision Tree": "Simple and interpretable, but tends to overfit. Performance is moderate and unstable depending on depth/split criteria.",
+        "kNN": "Sensitive to feature scaling and choice of k. Reasonable performance but slower on larger datasets. Recall for minority class is weaker.",
+        "Naive Bayes": "Fast and lightweight. Works well with categorical features but independence assumption limits accuracy. Precision/recall lower than other models.",
+        "Random Forest": "Strong performance due to averaging across multiple trees. More robust than a single Decision Tree, with balanced precision/recall.",
+        "XGBoost": "Best overall (~87% accuracy). Handles feature interactions and imbalanced data effectively. Strong precision, recall, and F1 scores."
+    }
+    st.write(f"**{selected_model}:** {observations[selected_model]}")
