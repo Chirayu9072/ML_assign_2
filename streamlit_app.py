@@ -35,37 +35,29 @@ columns = [
 ]
 
 # -----------------------------
-# Cache Data Loading
+# Load Dataset (Session State)
 # -----------------------------
-@st.cache_data
-def load_data(file_path=None, uploaded_file=None):
-    if uploaded_file is not None:
-        return pd.read_csv(uploaded_file, names=columns)
-    else:
-        return pd.read_csv(file_path, header=None, names=columns)
-
-data = load_data(file_path="adult.data")
+if "data" not in st.session_state:
+    st.session_state.data = pd.read_csv("adult.data", header=None, names=columns)
 
 uploaded_file = st.file_uploader("Upload CSV", type="csv")
 if uploaded_file is not None:
-    data = load_data(uploaded_file=uploaded_file)
+    st.session_state.data = pd.read_csv(uploaded_file, names=columns)
 
-st.write("Preview of dataset:", data.head())
+st.write("Preview of dataset:", st.session_state.data.head())
 
 # -----------------------------
-# Preprocessing
+# Preprocessing (Session State)
 # -----------------------------
-@st.cache_data
-def preprocess_data(data):
-    data = data.replace("?", pd.NA).dropna()
+if "processed_data" not in st.session_state:
+    data = st.session_state.data.replace("?", pd.NA).dropna()
     categorical_cols = data.select_dtypes(include="object").columns
     for col in categorical_cols:
         le = LabelEncoder()
         data[col] = le.fit_transform(data[col])
-    return data
+    st.session_state.processed_data = data
 
-data = preprocess_data(data)
-
+data = st.session_state.processed_data
 X = data.drop("income", axis=1)
 y = data["income"]
 
@@ -92,21 +84,27 @@ models = {
 }
 
 # -----------------------------
-# Cache Model Training
+# Train or Load Models (Session State + Disk)
 # -----------------------------
-@st.cache_resource
-def train_model(_model, X_train, y_train):
-    _model.fit(X_train, y_train)
-    return _model
+if "trained_models" not in st.session_state:
+    st.session_state.trained_models = {}
 
 results = []
-trained_models = {}
-
-os.makedirs("model", exist_ok=True)
 
 for name, model in models.items():
-    trained_model = train_model(model, X_train, y_train)
-    trained_models[name] = trained_model
+    filename = f"model/{name.replace(' ', '_').lower()}.pkl"
+    os.makedirs("model", exist_ok=True)
+
+    if name in st.session_state.trained_models:
+        trained_model = st.session_state.trained_models[name]
+    elif os.path.exists(filename):
+        trained_model = joblib.load(filename)
+        st.session_state.trained_models[name] = trained_model
+    else:
+        model.fit(X_train, y_train)
+        joblib.dump(model, filename)
+        trained_model = model
+        st.session_state.trained_models[name] = trained_model
 
     preds = trained_model.predict(X_test)
     probs = trained_model.predict_proba(X_test)[:, 1] if hasattr(trained_model, "predict_proba") else None
@@ -122,9 +120,6 @@ for name, model in models.items():
     }
     results.append(metrics)
 
-    filename = f"model/{name.replace(' ', '_').lower()}.pkl"
-    joblib.dump(trained_model, filename)
-
 results_df = pd.DataFrame(results)
 st.write("Model Comparison Table", results_df)
 
@@ -132,9 +127,13 @@ st.write("Model Comparison Table", results_df)
 # Retrain Button
 # -----------------------------
 if st.button("Retrain Models"):
-    st.cache_resource.clear()
-    st.cache_data.clear()
-    st.experimental_rerun()
+    st.session_state.trained_models = {}
+    for name, model in models.items():
+        model.fit(X_train, y_train)
+        filename = f"model/{name.replace(' ', '_').lower()}.pkl"
+        joblib.dump(model, filename)
+        st.session_state.trained_models[name] = model
+    st.success("Models retrained successfully! Please reselect a model to view updated results.")
 
 # -----------------------------
 # Model Details & Visualization
@@ -142,7 +141,7 @@ if st.button("Retrain Models"):
 selected_model = st.selectbox("Select a model to view details", list(models.keys()))
 
 if selected_model:
-    model = trained_models[selected_model]
+    model = st.session_state.trained_models[selected_model]
     preds = model.predict(X_test)
 
     # Confusion Matrix
