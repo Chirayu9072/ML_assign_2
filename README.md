@@ -24,16 +24,14 @@ The following six models were implemented on the same dataset:
 ---
 
 ## 📊 Comparison Table of Evaluation Metrics
-| ML Model Name       | Accuracy | AUC | Precision | Recall | F1 | MCC |
-|---------------------|----------|-----|-----------|--------|----|-----|
-| Logistic Regression | xx.xx    | xx.xx | xx.xx     | xx.xx  | xx.xx | xx.xx |
-| Decision Tree       | xx.xx    | xx.xx | xx.xx     | xx.xx  | xx.xx | xx.xx |
-| kNN                 | xx.xx    | xx.xx | xx.xx     | xx.xx  | xx.xx | xx.xx |
-| Naive Bayes         | xx.xx    | xx.xx | xx.xx     | xx.xx  | xx.xx | xx.xx |
-| Random Forest       | xx.xx    | xx.xx | xx.xx     | xx.xx  | xx.xx | xx.xx |
-| XGBoost             | xx.xx    | xx.xx | xx.xx     | xx.xx  | xx.xx | xx.xx |
-
-*(Replace `xx.xx` with actual values from your Streamlit app output.)*
+| ML Model Name       | Accuracy | AUC     | Precision | Recall  | F1      | MCC     |
+|---------------------|----------|---------|-----------|---------|---------|---------|
+| Logistic Regression | 0.8247   | 0.8568  | 0.7113    | 0.4596  | 0.5584  | 0.4722  |
+| Decision Tree       | 0.8128   | 0.7527  | 0.6068    | 0.6365  | 0.6213  | 0.4974  
+| kNN                 | 0.8353   | 0.8572  | 0.6786    | 0.6022  | 0.6381  | 0.5335  |
+| Naive Bayes         | 0.8093   | 0.8613  | 0.7064    | 0.3584  | 0.4755  | 0.4060  |
+| Random Forest       | 0.8609   | 0.9110  | 0.7487    | 0.6372  | 0.6884  | 0.6029  |
+| XGBoost             | 0.8719   | 0.9270  | 0.7661    | 0.6754  | 0.7179  | 0.6376  |
 
 ---
 
@@ -49,6 +47,3 @@ The following six models were implemented on the same dataset:
 
 ---
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/<your-username>/ML-Assignment-2-Classification.git
