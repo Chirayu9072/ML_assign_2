@@ -95,9 +95,9 @@ models = {
 # Cache Model Training
 # -----------------------------
 @st.cache_resource
-def train_model(model, X_train, y_train):
-    model.fit(X_train, y_train)
-    return model
+def train_model(_model, X_train, y_train):
+    _model.fit(X_train, y_train)
+    return _model
 
 results = []
 trained_models = {}
