@@ -3,6 +3,13 @@ The objective of this project is to implement and evaluate multiple machine lear
 The task is to predict whether an individual's income exceeds $50K per year based on demographic and employment attributes.
 
 ---
+## Dataset Description 
+
+The Adult Census Income Dataset comes from the 1994 U.S. Census Bureau and is widely used for income prediction tasks. 
+It contains 48,842 instances with 14 attributes describing demographic and employment details such as age, education, occupation, hours worked per week, and capital gains/losses. 
+The target variable is income, classified as either <=50K or >50K.
+This dataset is valuable because it combines diverse socio-economic attributes, requires preprocessing (handling missing values, encoding categorical features, scaling numerical ones), and presents a realistic challenge for evaluating classification models.
+
 - **Dataset:** Adult Census Income (UCI Machine Learning Repository)  
 - **Instances:** ~48,842  
 - **Features:** 14 attributes (categorical + numerical)  
@@ -14,7 +21,7 @@ The task is to predict whether an individual's income exceeds $50K per year base
   - Standard scaling applied to numerical features  
 
 ---
-The following six models were implemented on the same dataset:
+## The following six models were implemented on the same dataset:
 1. Logistic Regression  
 2. Decision Tree Classifier  
 3. k-Nearest Neighbor Classifier  
@@ -23,7 +30,8 @@ The following six models were implemented on the same dataset:
 6. XGBoost (Ensemble)  
 ---
 
-## 📊 Comparison Table of Evaluation Metrics
+## Comparison Table with the evaluation metrics calculated for all the 6 models as below:
+
 | ML Model Name       | Accuracy | AUC     | Precision | Recall  | F1      | MCC     |
 |---------------------|----------|---------|-----------|---------|---------|---------|
 | Logistic Regression | 0.8247   | 0.8568  | 0.7113    | 0.4596  | 0.5584  | 0.4722  |
@@ -34,7 +42,7 @@ The following six models were implemented on the same dataset:
 | XGBoost             | 0.8719   | 0.9270  | 0.7661    | 0.6754  | 0.7179  | 0.6376  |
 
 ---
-
+##  Observations on the performance of each model on the dataset.
 
 | ML Model Name       | Observation about model performance |
 |---------------------|--------------------------------------|
