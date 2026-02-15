@@ -129,6 +129,14 @@ results_df = pd.DataFrame(results)
 st.write("Model Comparison Table", results_df)
 
 # -----------------------------
+# Retrain Button
+# -----------------------------
+if st.button("Retrain Models"):
+    st.cache_resource.clear()
+    st.cache_data.clear()
+    st.experimental_rerun()
+
+# -----------------------------
 # Model Details & Visualization
 # -----------------------------
 selected_model = st.selectbox("Select a model to view details", list(models.keys()))
