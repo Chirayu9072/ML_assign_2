@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-# Column names from UCI Adult dataset
 columns = [
     "age", "workclass", "fnlwgt", "education", "education-num",
     "marital-status", "occupation", "relationship", "race", "sex",
@@ -10,10 +9,10 @@ columns = [
 
 st.title("Adult Census Income Classification")
 
-# Option 1: Load from repo
+
 data = pd.read_csv("adult.data", header=None, names=columns)
 
-# Option 2: Allow upload (mandatory for assignment)
+
 uploaded_file = st.file_uploader("Upload CSV", type="csv")
 if uploaded_file is not None:
     data = pd.read_csv(uploaded_file, names=columns)
@@ -23,29 +22,28 @@ st.write("Preview of dataset:", data.head())
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 
-# Handle missing values
 data = data.replace("?", pd.NA).dropna()
 
-# Encode categorical features
+
 categorical_cols = data.select_dtypes(include="object").columns
 for col in categorical_cols:
     le = LabelEncoder()
     data[col] = le.fit_transform(data[col])
 
-# Split features and target
+
 X = data.drop("income", axis=1)
 y = data["income"]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Scale numerical features
+
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 st.write("Preprocessing complete. Training data shape:", X_train.shape)
 
-# --- Model Training & Evaluation ---
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -57,7 +55,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score, precision_score, reca
 import joblib
 import os
 
-# Ensure model folder exists
+
 os.makedirs("model", exist_ok=True)
 
 models = {
@@ -86,7 +84,7 @@ for name, model in models.items():
     }
     results.append(metrics)
 
-    # 🔽 Save trained model
+    
     filename = f"model/{name.replace(' ', '_').lower()}.pkl"
     joblib.dump(model, filename)
 
@@ -97,7 +95,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, classification_report
 
-# Dropdown for model selection
+
 selected_model = st.selectbox("Select a model to view details", list(models.keys()))
 
 if selected_model:
