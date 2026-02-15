@@ -20,23 +20,17 @@ from sklearn.metrics import (
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# -----------------------------
-# Streamlit App Title
-# -----------------------------
+
 st.title("Adult Census Income Classification")
 
-# -----------------------------
-# Column Names
-# -----------------------------
+
 columns = [
     "age", "workclass", "fnlwgt", "education", "education-num",
     "marital-status", "occupation", "relationship", "race", "sex",
     "capital-gain", "capital-loss", "hours-per-week", "native-country", "income"
 ]
 
-# -----------------------------
-# Load Dataset (Session State)
-# -----------------------------
+
 if "data" not in st.session_state:
     st.session_state.data = pd.read_csv("adult.data", header=None, names=columns)
 
@@ -46,9 +40,7 @@ if uploaded_file is not None:
 
 st.write("Preview of dataset:", st.session_state.data.head())
 
-# -----------------------------
-# Preprocessing (Session State)
-# -----------------------------
+
 if "processed_data" not in st.session_state:
     data = st.session_state.data.replace("?", pd.NA).dropna()
     categorical_cols = data.select_dtypes(include="object").columns
@@ -71,9 +63,7 @@ X_test = scaler.transform(X_test)
 
 st.write("Preprocessing complete. Training data shape:", X_train.shape)
 
-# -----------------------------
-# Models
-# -----------------------------
+
 models = {
     "Logistic Regression": LogisticRegression(max_iter=1000),
     "Decision Tree": DecisionTreeClassifier(),
@@ -83,9 +73,7 @@ models = {
     "XGBoost": XGBClassifier(use_label_encoder=False, eval_metric="logloss")
 }
 
-# -----------------------------
-# Train or Load Models (Session State + Disk)
-# -----------------------------
+
 if "trained_models" not in st.session_state:
     st.session_state.trained_models = {}
 
@@ -123,9 +111,6 @@ for name, model in models.items():
 results_df = pd.DataFrame(results)
 st.write("Model Comparison Table", results_df)
 
-# -----------------------------
-# Retrain Button
-# -----------------------------
 if st.button("Retrain Models"):
     st.session_state.trained_models = {}
     for name, model in models.items():
@@ -135,26 +120,22 @@ if st.button("Retrain Models"):
         st.session_state.trained_models[name] = model
     st.success("Models retrained successfully! Please reselect a model to view updated results.")
 
-# -----------------------------
-# Model Details & Visualization
-# -----------------------------
 selected_model = st.selectbox("Select a model to view details", list(models.keys()))
 
 if selected_model:
     model = st.session_state.trained_models[selected_model]
     preds = model.predict(X_test)
 
-    # Confusion Matrix
+  
     cm = confusion_matrix(y_test, preds)
     fig, ax = plt.subplots()
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
     st.pyplot(fig)
 
-    # Classification Report
+
     st.text("Classification Report:")
     st.text(classification_report(y_test, preds))
 
-    # Observations
     st.subheader("Model Performance Observation")
     observations = {
         "Logistic Regression": "Achieved ~82% accuracy. Performs well on linearly separable features, but struggles with complex non-linear relationships. Higher precision for class 0, weaker recall for class 1.",
